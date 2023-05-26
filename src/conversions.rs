@@ -11,43 +11,41 @@ pub fn get_input() -> Vec<u32> {
 
     let mut binary_number: Vec<u32> = Vec::new();
     match io::stdin().read_line(&mut user_input) {
-        Ok(_) => {
-            user_input.pop(); // Remove the appended newline or EOF from the string.
-            let user_input: Chars = user_input.chars(); // Create an iterator of characters out of the string.
-            for digit in user_input {
-                if digit.is_whitespace() {continue}
-
-                match digit.to_digit(2) { // Try to transform the character into a digit of the specified radix.
-                    Some(digit) => {
-                        binary_number.push(digit)
-                    },
-                    None => {
-                        eprintln!("Invalid number!");
-                        break
-                    }
-                };
-            }
-            return binary_number;
-        },
+        Ok(_) => {},
         Err(error) => {
             eprintln!("Error: {error}");
             return binary_number;
         }
     }
+
+    user_input.pop(); // Remove the appended newline or EOF from the string.
+    let user_input: Chars = user_input.chars(); // Create an iterator of characters out of the string.
+    for digit in user_input {
+        if digit.is_whitespace() { continue }
+
+        match digit.to_digit(2) { // Try to transform the character into a integer digit of the specified radix.
+            Some(digit) => { binary_number.push(digit) },
+            None => {
+                eprintln!("Invalid number!");
+                break
+            }
+        }
+    }
+
+    return binary_number;
 }
 
 pub fn parse_input(char_digit: char, radix: u32) -> usize { // TODO: I'll try to replicate the functionality of char::to_digit.
     let digit: usize = 0;
     return digit
-    }
+}
 
-pub fn binary_hex<'a>(binary_number: &mut Vec<u32>) -> Vec<String> { // 'a is used to specify which variable we're returning.
+pub fn binary_hex(binary_number: &mut Vec<u32>) -> Vec<String> {
     // While the array isn't divisible by 4, keep updating it with more leading zeroes.
     while binary_number.len() % 4 != 0 { binary_number.push(0) };
     binary_number.reverse();
     
     let mut hex_calc: Vec<String> = Vec::new();
-    // do X for every number in 0 to (len / 4)
     for digit in 0 .. ( binary_number.len() / 4 ) {
         let mut calc: u32 = 0;
         for pos_shift in 0 ..= 3 {
