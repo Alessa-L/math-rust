@@ -13,7 +13,7 @@ pub fn get_input() -> Vec<u32> {
         Err(error) => {
             eprintln!("Error: {error}");
             println!("Let's try this again.");
-            get_input();
+            return get_input();
         }
     }
 
