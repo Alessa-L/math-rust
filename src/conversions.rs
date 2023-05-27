@@ -13,7 +13,7 @@ pub fn get_input() -> Vec<u32> {
     print!("Please input a number: ");
     io::stdout().flush().unwrap(); // The stdout needs to be flushed to ensure subsequent output is immediate.
     match io::stdin().read_line(&mut user_input) {
-        Ok(_) => {},
+        Ok(_) => {}
         Err(error) => {
             eprintln!("Error: {error}");
             println!("Let's try this again.");
@@ -29,7 +29,7 @@ pub fn get_input() -> Vec<u32> {
             continue
         }
         match digit.to_digit(2) { // Try to transform the character into a integer digit of the specified radix.
-            Some(digit) => { binary_number.push(digit) },
+            Some(digit) => { binary_number.push(digit) }
             None => {
                 eprintln!("Invalid number!");
                 break
