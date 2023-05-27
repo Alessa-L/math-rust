@@ -8,21 +8,20 @@ pub fn get_input() -> Vec<u32> {
     let mut user_input: String = String::new();
     print!("Please input a number: ");
     io::stdout().flush().unwrap(); // The stdout needs to be flushed to ensure subsequent output is immediate.
-
-    let mut binary_number: Vec<u32> = Vec::new();
     match io::stdin().read_line(&mut user_input) {
         Ok(_) => {},
         Err(error) => {
             eprintln!("Error: {error}");
-            return binary_number;
+            println!("Let's try this again.");
+            get_input();
         }
     }
 
     user_input.pop(); // Remove the appended newline or EOF from the string.
     let user_input: Chars = user_input.chars(); // Create an iterator of characters out of the string.
+    let mut binary_number: Vec<u32> = Vec::new();
     for digit in user_input {
         if digit.is_whitespace() { continue }
-
         match digit.to_digit(2) { // Try to transform the character into a integer digit of the specified radix.
             Some(digit) => { binary_number.push(digit) },
             None => {
@@ -56,17 +55,14 @@ pub fn binary_hex(binary_number: &mut Vec<u32>) -> Vec<String> {
     }
     hex_calc.reverse();
 
-    let hex_digits: [&str; 6] = ["A", "B", "C", "D", "E", "F"];
-    let mut hex_map: HashMap<usize, &str> = HashMap::with_capacity(6);
-    for (i, digit) in hex_digits.into_iter().enumerate() {
-        let dec_digit: usize = i + 10;
-        hex_map.insert(dec_digit, digit);
-    }
+    let hex_digits: HashMap<usize, &str> = HashMap::from(
+        [ (10, "A"), (11, "B"), (12, "C"), (13, "D"), (14, "E"), (15, "F") ]
+    );
 
     for (i, digit) in hex_calc.clone().into_iter().enumerate() {
         let digit: usize = digit.parse().unwrap();
         if digit > 9 {
-            hex_calc[i] = hex_map[&digit].try_into().unwrap();
+            hex_calc[i] = hex_digits[&digit].try_into().unwrap();
         }
         else {
             hex_calc[i] = digit.to_string();
