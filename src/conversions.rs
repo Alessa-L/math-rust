@@ -13,7 +13,7 @@ pub fn get_input() -> Vec<u32> {
     print!("Please input a number: ");
     io::stdout().flush().unwrap(); // The stdout needs to be flushed to ensure subsequent output is immediate.
     match io::stdin().read_line(&mut user_input) {
-        Ok(_) => {}
+        Ok(_) => { user_input.pop(); }
         Err(error) => {
             eprintln!("Error: {error}");
             println!("Let's try this again.");
@@ -21,7 +21,6 @@ pub fn get_input() -> Vec<u32> {
         }
     }
 
-    user_input.pop(); // Remove the appended newline or EOF from the string.
     let user_input: Chars = user_input.chars(); // Create an iterator of characters out of the string.
     let mut binary_number: Vec<u32> = Vec::new();
     for digit in user_input {
