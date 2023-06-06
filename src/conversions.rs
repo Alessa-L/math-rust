@@ -8,7 +8,7 @@ use std::{
 // Binary to decimal: Vec[digit * 2.pow(n)]
 // bit shift could also be used in this instance: Vec[digit << n]
 
-pub fn get_input() -> Vec<u32> {
+pub fn get_input() -> Vec<u8> {
     let mut user_input: String = String::new();
     print!("Please input a number: ");
     io::stdout().flush().unwrap(); // The stdout needs to be flushed to ensure subsequent output is immediate.
@@ -22,12 +22,12 @@ pub fn get_input() -> Vec<u32> {
     }
 
     let user_input: Chars = user_input.chars(); // Create an iterator of characters out of the string.
-    let mut binary_number: Vec<u32> = Vec::new();
+    let mut binary_number: Vec<u8> = Vec::new();
     for digit in user_input {
         if digit.is_whitespace() {
             continue
         }
-        match digit.to_digit(2) { // Try to transform the character into a integer digit of the specified radix.
+        match parse_input(digit, 2) { // Try to transform the character into a integer digit of the specified radix.
             Some(digit) => { binary_number.push(digit) }
             None => {
                 eprintln!("Invalid number!");
@@ -39,13 +39,24 @@ pub fn get_input() -> Vec<u32> {
     return binary_number
 }
 
-pub fn parse_input(char_digit: char, radix: u32) -> usize { 
-    // TODO: I'll try to replicate the functionality of char::to_digit.
-    let digit: usize = 0;
-    return digit
+pub fn parse_input(char_digit: char, radix: u8) -> Option<u8> { 
+    let mut digits: Vec<(char, u8)> = (0 .. radix).map(|i| (i.to_string().chars().nth(0).unwrap(), i) ).collect();
+    if radix > 9 {
+        let hexadecimal: Vec<(char, u8)> = (10 .. 16).map(|i| (
+            ('a' .. 'f').nth(i - 10).unwrap(),
+            i as u8) ).collect();
+        digits.extend(hexadecimal);
+    }
+    let digits_map: HashMap<char, u8> = HashMap::from_iter(digits);
+    
+    if digits_map.contains_key(&char_digit) {
+        return Some(digits_map[&char_digit])
+    } else {
+        return None
+    }
 }
 
-pub fn binary_hex(binary_number: &mut Vec<u32>) -> Vec<String> {
+pub fn binary_hex(binary_number: &mut Vec<u8>) -> Vec<String> {
     // While the array isn't divisible by 4, keep updating it with more leading zeroes.
     while binary_number.len() % 4 != 0 {
         binary_number.push(0);
@@ -54,11 +65,10 @@ pub fn binary_hex(binary_number: &mut Vec<u32>) -> Vec<String> {
     
     let mut hex_calc: Vec<String> = Vec::new();
     for digit in 0 .. ( binary_number.len() / 4 ) {
-        let mut calc: u32 = 0;
+        let mut calc: u8 = 0;
         for pos_shift in 0 ..= 3 {
             let binary_radix: u32 = 2; // Need to set this in order to perform exponentiation in a more readable format.
-            // try_into() used in order to convert usize to u32.
-            calc += binary_number[ (digit * 4) + pos_shift ] * binary_radix.pow(pos_shift.try_into().unwrap()); 
+            calc += binary_number[ (digit * 4) + pos_shift ] * (binary_radix.pow(pos_shift as u32) as u8); 
         }
         hex_calc.push(calc.to_string());
     }
