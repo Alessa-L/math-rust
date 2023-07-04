@@ -1,7 +1,8 @@
 use std::{io::stdin, process::exit};
-use conversions::get_input;
 
 mod conversions;
+mod computer;
+
 fn main() {
     let options: [&str; 6] = [
         "binary to decimal conversions.",
@@ -46,7 +47,7 @@ fn main() {
         }
         "3" => {
             println!("decimal to binary.");
-            let decimal_vector: Vec<u8> = get_input(10);
+            let decimal_vector: Vec<u8> = conversions::get_input(10);
             // We "unpack" the vector with the appropriate decimal place value
             let mut decimal_number: f32  = decimal_vector.iter().fold(0.0, |accum, n| (accum * 10.0) + *n as f32);
             let binary_number: Vec<u8> = conversions::decimal_bin(&mut decimal_number);
@@ -58,7 +59,10 @@ fn main() {
         "4" => println!("decimal to hexadecimal."),
         "5" => println!("hexadecimal to binary."),
         "6" => println!("hexadecimal to decimal."),
-        &_ => println!("Invalid option."),
+        "7" => {
+            computer::bubble_sort();
+        }
+        &_ => println!("Invalid option.")
     }
     
     exit(0)
